@@ -1,6 +1,5 @@
 ---
 Language: Cpp
-Standard: Cpp23
 BasedOnStyle: Microsoft
 
 # === Indentation & Alignment ===
