@@ -1,5 +1,5 @@
 {
-	"version": 2,
+	"version": 4,
 	"cmakeMinimumRequired": {
 		"major": 3,
 		"minor": 20,
@@ -7,32 +7,113 @@
 	},
 	"configurePresets": [
 		{
-			"name": "debug",
-			"displayName": "Debug",
-			"description": "Windows development configuration with Visual Studio 2022",
+			"name": "base",
+			"description": "Abstract base for directory structure",
+			"hidden": true,
+			"binaryDir": "${sourceDir}/build/${presetName}"
+		},
+		{
+			"name": "msvc-base",
+			"description": "Common Windows settings for MSVC and vcpkg",
+			"hidden": true,
+			"inherits": "base",
 			"generator": "Visual Studio 17 2022",
-			"binaryDir": "${sourceDir}/build/${presetName}",
 			"architecture": {
 				"value": "x64",
 				"strategy": "external"
 			},
 			"cacheVariables": {
-				"CMAKE_BUILD_TYPE": "Debug",
-				"CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
-			},
-			"vendor": {
-				"microsoft.com/VisualStudioSettings/CMake/1.0": {
-					"hostOS": [
-						"Windows"
-					]
-				}
+				"CMAKE_RUNTIME_OUTPUT_DIRECTORY": "${sourceDir}/bin/msvc"
 			}
 		},
 		{
-			"name": "release",
-			"displayName": "Release",
-			"description": "Windows release build with optimizations",
-			"inherits": "debug",
+			"name": "clang-win-base",
+			"description": "Windows Clang (LLVM) with Ninja",
+			"hidden": true,
+			"inherits": "base",
+			"generator": "Ninja",
+			"cacheVariables": {
+				"CMAKE_C_COMPILER": "clang-cl",
+				"CMAKE_CXX_COMPILER": "clang-cl",
+				"CMAKE_RUNTIME_OUTPUT_DIRECTORY": "${sourceDir}/bin/clang-win"
+			}
+		},
+		{
+			"name": "clang-linux-base",
+			"description": "Linux Clang with Ninja",
+			"hidden": true,
+			"inherits": "base",
+			"generator": "Ninja",
+			"cacheVariables": {
+				"CMAKE_C_COMPILER": "clang",
+				"CMAKE_CXX_COMPILER": "clang++",
+				"CMAKE_RUNTIME_OUTPUT_DIRECTORY": "${sourceDir}/bin/clang-linux"
+			}
+		},
+		{
+			"name": "gcc-linux-base",
+			"description": "Linux GCC with Ninja",
+			"hidden": true,
+			"inherits": "base",
+			"generator": "Ninja",
+			"cacheVariables": {
+				"CMAKE_C_COMPILER": "gcc",
+				"CMAKE_CXX_COMPILER": "g++",
+				"CMAKE_RUNTIME_OUTPUT_DIRECTORY": "${sourceDir}/bin/gcc-linux"
+			}
+		},
+		{
+			"name": "msvc-debug",
+			"inherits": "msvc-base",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Debug"
+			}
+		},
+		{
+			"name": "msvc-release",
+			"inherits": "msvc-base",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Release"
+			}
+		},
+		{
+			"name": "clang-win-debug",
+			"inherits": "clang-win-base",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Debug"
+			}
+		},
+		{
+			"name": "clang-win-release",
+			"inherits": "clang-win-base",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Release"
+			}
+		},
+		{
+			"name": "clang-linux-debug",
+			"inherits": "clang-linux-base",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Debug"
+			}
+		},
+		{
+			"name": "clang-linux-release",
+			"inherits": "clang-linux-base",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Release"
+			}
+		},
+		{
+			"name": "gcc-linux-debug",
+			"inherits": "gcc-linux-base",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Debug"
+			}
+		},
+		{
+			"name": "gcc-linux-release",
+			"inherits": "gcc-linux-base",
 			"cacheVariables": {
 				"CMAKE_BUILD_TYPE": "Release"
 			}
@@ -40,52 +121,80 @@
 	],
 	"buildPresets": [
 		{
-			"name": "build-debug",
-			"displayName": "Build: Debug",
-			"description": "Build Windows debug configuration",
-			"configurePreset": "debug",
+			"name": "base-build",
+			"hidden": true,
+			"inheritConfigureEnvironment": true
+		},
+		{
+			"name": "msvc-debug",
+			"inherits": "base-build",
+			"configurePreset": "msvc-debug",
 			"configuration": "Debug"
 		},
 		{
-			"name": "build-debug-clean",
-			"displayName": "Build: Debug (Clean first)",
-			"description": "Clean rebuild for Windows",
-			"configurePreset": "debug",
-			"cleanFirst": true
-		},
-		{
-			"name": "build-debug-verbose",
-			"displayName": "Build: Debug Verbose",
-			"description": "Verbose build output for debugging",
-			"configurePreset": "debug",
-			"verbose": true
-		},
-		{
-			"name": "build-release",
-			"displayName": "Build: Release",
-			"description": "Build Windows release configuration",
-			"configurePreset": "release",
+			"name": "msvc-release",
+			"inherits": "base-build",
+			"configurePreset": "msvc-release",
 			"configuration": "Release"
+		},
+		{
+			"name": "clang-win-debug",
+			"inherits": "base-build",
+			"configurePreset": "clang-win-debug"
+		},
+		{
+			"name": "clang-win-release",
+			"inherits": "base-build",
+			"configurePreset": "clang-win-release"
+		},
+		{
+			"name": "clang-linux-debug",
+			"inherits": "base-build",
+			"configurePreset": "clang-linux-debug"
+		},
+		{
+			"name": "clang-linux-release",
+			"inherits": "base-build",
+			"configurePreset": "clang-linux-release"
+		},
+		{
+			"name": "gcc-linux-debug",
+			"inherits": "base-build",
+			"configurePreset": "gcc-linux-debug"
+		},
+		{
+			"name": "gcc-linux-release",
+			"inherits": "base-build",
+			"configurePreset": "gcc-linux-release"
 		}
 	],
 	"testPresets": [
 		{
-			"name": "test-debug",
-			"displayName": "Test: Debug",
-			"description": "Run tests for Debug on Windows",
-			"configurePreset": "debug",
+			"name": "base-test",
+			"hidden": true,
 			"output": {
 				"outputOnFailure": true
 			}
 		},
 		{
-			"name": "test-release",
-			"displayName": "Test: Release",
-			"description": "Run tests for Release on Windows",
-			"configurePreset": "release",
-			"output": {
-				"outputOnFailure": true
-			}
+			"name": "test-msvc-debug",
+			"inherits": "base-test",
+			"configurePreset": "msvc-debug"
+		},
+		{
+			"name": "test-clang-win-debug",
+			"inherits": "base-test",
+			"configurePreset": "clang-win-debug"
+		},
+		{
+			"name": "test-clang-linux-debug",
+			"inherits": "base-test",
+			"configurePreset": "clang-linux-debug"
+		},
+		{
+			"name": "test-gcc-linux-debug",
+			"inherits": "base-test",
+			"configurePreset": "gcc-linux-debug"
 		}
 	]
 }

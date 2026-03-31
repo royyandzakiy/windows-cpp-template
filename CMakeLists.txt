@@ -1,8 +1,14 @@
 #==============================================================================
+# Pre-Project Checks
+#==============================================================================
+cmake_minimum_required(VERSION 3.5..4.2)
+
+include(cmake/local_path.cmake)
+include(cmake/config_vcpkg.cmake)
+
+#==============================================================================
 # Project Configuration
 #==============================================================================
-cmake_minimum_required(VERSION 3.28)
-
 project(cmake_project_template 
     LANGUAGES CXX
     VERSION 1.0.0
@@ -15,24 +21,6 @@ include(cmake/version.cmake)
 generate_version_header()
 source_group("Generated" FILES "${CMAKE_CURRENT_SOURCE_DIR}/include/version.h")
 message(STATUS "Building ${PROJECT_NAME} version ${PROJECT_VERSION}")
-
-#==============================================================================
-# Platform Configuration
-#==============================================================================
-if(WIN32)
-    include(cmake/setup-windows.cmake)
-endif()
-
-#==============================================================================
-# Toolchain Configuration
-#==============================================================================
-if(NOT CMAKE_TOOLCHAIN_FILE AND DEFINED ENV{VCPKG_ROOT})
-    set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
-endif()
-
-if(CMAKE_TOOLCHAIN_FILE)
-    message(STATUS "Using VCPKG toolchain: ${CMAKE_TOOLCHAIN_FILE}")
-endif()
 
 #==============================================================================
 # WinRT Configuration (OPTIONAL - Easy to remove completely)
