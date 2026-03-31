@@ -4,7 +4,7 @@ A professional boilerplate template for Windows C++23 development using CMake, v
 
 ## Features
 
-- **Modern C++23** with standard library features and `std::print`
+- **Modern C++23** with standard library features
 - **Windows-specific APIs** including WinRT for BLE and Windows.h for COM ports
 - **vcpkg integration** for dependency management
 - **CMake Presets** for simplified build configuration

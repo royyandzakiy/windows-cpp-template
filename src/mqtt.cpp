@@ -1,6 +1,6 @@
 #include "../include/mqtt.h"
 #include <chrono>
-#include <print>
+#include <fmt/core.h>
 #include <thread>
 
 #ifdef _WIN32
@@ -12,11 +12,11 @@ const std::string message::EMPTY_STR{};
 class Callback : public virtual mqtt::callback {
   public:
     void message_arrived(mqtt::const_message_ptr msg) override {
-        std::print("\nReceived message:\n\tTopic: {}\n\tPayload: {}\n", msg->get_topic(), msg->get_payload_str());
+        fmt::print("\nReceived message:\n\tTopic: {}\n\tPayload: {}\n", msg->get_topic(), msg->get_payload_str());
     }
 
     void connection_lost(const std::string &cause) override {
-        std::print("\nConnection lost: {}\n", cause);
+        fmt::print("\nConnection lost: {}\n", cause);
     }
 };
 
@@ -28,7 +28,7 @@ void run_mqtt() {
 
     // Create MQTT client
     mqtt::async_client mqtt_client{std::string{server_address}, std::string{client_id}};
-    std::print("MQTT client instance created: Address={}, ClientID={}\n", server_address, client_id);
+    fmt::print("MQTT client instance created: Address={}, ClientID={}\n", server_address, client_id);
 
     // Set callback
     Callback cb;
@@ -41,24 +41,24 @@ void run_mqtt() {
 
     try {
         // Connect to the broker
-        std::print("Connecting to the MQTT broker...\n");
+        fmt::print("Connecting to the MQTT broker...\n");
         mqtt_client.connect(conn_opts)->wait();
-        std::print("Connected to the MQTT broker\n");
+        fmt::print("Connected to the MQTT broker\n");
 
         // Subscribe to topic
-        std::print("Subscribing to topic: {}\n", sub_topic);
+        fmt::print("Subscribing to topic: {}\n", sub_topic);
         mqtt_client.subscribe(std::string{sub_topic}, 1)->wait();
-        std::print("Subscribed to topic: {}\n", sub_topic);
+        fmt::print("Subscribed to topic: {}\n", sub_topic);
 
         // Create and publish message
         auto msg = mqtt::make_message(std::string{pub_topic}, "Hello MQTT linker!");
-        std::print("Publishing message:\n\tTopic: {}\n\tPayload: {}\n", msg->get_topic(), msg->get_payload_str());
+        fmt::print("Publishing message:\n\tTopic: {}\n\tPayload: {}\n", msg->get_topic(), msg->get_payload_str());
         mqtt_client.publish(msg)->wait();
-        std::print("Message published\n");
+        fmt::print("Message published\n");
 
         // Set up timer for 3 seconds
         const auto start = std::chrono::steady_clock::now();
-        std::print("\nWaiting for incoming messages for 3 seconds...\n");
+        fmt::print("\nWaiting for incoming messages for 3 seconds...\n");
 
         // Keep running for 3 seconds
         while (std::chrono::steady_clock::now() - start < std::chrono::seconds(3)) {
@@ -66,10 +66,10 @@ void run_mqtt() {
         }
 
         // Disconnect
-        std::print("\n3 seconds elapsed. Disconnecting from the MQTT broker...\n");
+        fmt::print("\n3 seconds elapsed. Disconnecting from the MQTT broker...\n");
         mqtt_client.disconnect()->wait();
-        std::print("Disconnected\n");
+        fmt::print("Disconnected\n");
     } catch (const mqtt::exception &exc) {
-        std::println(stderr, "MQTT error: {}", exc.what());
+        fmt::println(stderr, "MQTT error: {}", exc.what());
     }
 }

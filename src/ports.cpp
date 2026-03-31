@@ -6,9 +6,9 @@
 
 #include <cfgmgr32.h>
 #include <devguid.h>
+#include <fmt/core.h>
 #include <format>
 #include <iomanip>
-#include <print>
 #include <setupapi.h>
 
 #pragma comment(lib, "setupapi.lib")
@@ -127,26 +127,26 @@ namespace com_ports {
 }
 
 void print_com_ports() {
-    std::print("=== Available COM Ports (PnP Enumeration) ===\n");
+    fmt::print("=== Available COM Ports (PnP Enumeration) ===\n");
 
     auto ports = list_com_ports();
 
     if (ports.empty()) {
-        std::print("No COM ports found via PnP. Trying registry method...\n");
+        fmt::print("No COM ports found via PnP. Trying registry method...\n");
         ports = list_com_ports_registry();
     }
 
     if (ports.empty()) {
-        std::print("No COM ports found.\n");
+        fmt::print("No COM ports found.\n");
         return;
     }
 
-    std::print("{:<10} {:<50} {:<12}\n", "Port", "Description", "Status");
-    std::print("{:-<72}\n", "");
+    fmt::print("{:<10} {:<50} {:<12}\n", "Port", "Description", "Status");
+    fmt::print("{:-<72}\n", "");
 
     for (const auto &port : ports) {
         const std::string status = port.is_available ? "Available" : "Unavailable";
-        std::print("{:<10} {:<50} {:<12}\n", port.name, port.description, status);
+        fmt::print("{:<10} {:<50} {:<12}\n", port.name, port.description, status);
     }
 }
 
@@ -155,7 +155,7 @@ int run_com_ports() {
         print_com_ports();
         return 0;
     } catch (const std::exception &e) {
-        std::println(stderr, "Error listing COM ports: {}", e.what());
+        fmt::println(stderr, "Error listing COM ports: {}", e.what());
         return 1;
     }
 }

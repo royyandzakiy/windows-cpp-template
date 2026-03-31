@@ -50,6 +50,7 @@ endif()
 #==============================================================================
 # Dependencies
 #==============================================================================
+find_package(fmt CONFIG REQUIRED)
 find_package(GTest CONFIG REQUIRED)
 find_package(PahoMqttCpp CONFIG REQUIRED)
 
@@ -72,6 +73,7 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE 
         run_calc 
         my_mqtt
+		fmt::fmt
 )
 
 # Platform-specific dependencies

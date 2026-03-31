@@ -10,6 +10,10 @@ target_include_directories(calculator
     PUBLIC 
         ${CMAKE_SOURCE_DIR}/include
 )
+target_link_libraries(calculator 
+    PUBLIC 
+		fmt::fmt
+)
 
 # Calculator runner
 add_library(run_calc 
@@ -18,6 +22,7 @@ add_library(run_calc
 target_link_libraries(run_calc 
     PUBLIC 
         calculator
+		fmt::fmt
 )
 
 # =============================================================================
@@ -33,6 +38,7 @@ target_include_directories(my_mqtt
 target_link_libraries(my_mqtt
     PUBLIC
         PahoMqttCpp::paho-mqttpp3
+		fmt::fmt
 )
 
 # =============================================================================
@@ -48,6 +54,10 @@ if(WIN32)
         PUBLIC 
             ${CMAKE_SOURCE_DIR}/include
     )
+	target_link_libraries(my_com_ports
+		PUBLIC
+			fmt::fmt
+	)
 endif()
 
 # BLE scanner using WinRT (Windows WinRT only)
@@ -65,5 +75,6 @@ if(CMAKE_ENABLE_WINDOWS_WINRT)
         PUBLIC
             Microsoft::CppWinRT
             windowsapp
+			fmt::fmt
     )
 endif()
